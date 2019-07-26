@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.dao.UserDao">
+	<!-- 提取sql共性 -->
+	<sql id="queryWhereId">
+		<where>
+			<if test="name!=null and name!=''">
+				username like concat("%",#{name},"%")
+			</if>
+		</where>
+	</sql>
+	<select id="findPageObjects" resultType="com.cy.pojo.User">
+		select * from user
+		<include refid="queryWhereId" />
+		limit #{startIndex},#{pageSize}
+	</select>
+	<!-- 统计记录总数 -->
+	<select id="getRowCount" resultType="int">
+		select count(*)from user
+		<include refid="queryWhereId" />
+	</select>
+	<insert id="insertObject">
+		insert into user
+		(username,password,email,salt,moble,valid,createdTime)
+		values(#{username},#{password},#{email},#{salt},#{moble},#{valid},now())
+	</insert>
+	<update id="updateObject">
+	update user set 
+	username=#{username},
+	email=#{email},
+	moble=#{moble}
+	where id=#{id}
+	</update>
+	<select id="findObjectById"
+           resultType="com.cy.pojo.User">
+        select * from user where id=#{id}
+   </select>
+</mapper>

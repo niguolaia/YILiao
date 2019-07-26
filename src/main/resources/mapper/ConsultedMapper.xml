@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+  <mapper namespace="com.cy.dao.ConsultedDao">
+	<!-- 提取sql共性 -->
+	<sql id="queryWhereId">
+		<where>
+			<if test="name!=null and name!=''">
+				name like concat("%",#{name},"%")
+			</if>
+		</where>
+	</sql>
+	<!-- 分页查询 -->
+	<select id="findPageObjects"
+		resultType="com.cy.pojo.Consulted">
+		select *from consulted
+		<include refid="queryWhereId" />
+		limit #{startIndex},#{pageSize}
+	</select>
+	<!-- 统计记录总数 -->
+	<select id="getRowCount" resultType="int">
+		select count(*)
+		from consulted
+		<include refid="queryWhereId" />
+	</select>
+	<delete id="deleteByIds">
+	delete from consulted where id in
+	<foreach collection="array" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</delete>
+	<insert id="insertObject">
+	
+	insert into consulted (name,gender,age,tel,querytime,remark)
+	values(#{name},#{gender},#{age},#{tel},#{querytime},#{remark})
+	</insert>
+	</mapper>

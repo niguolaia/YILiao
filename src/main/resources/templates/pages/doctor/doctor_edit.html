@@ -1,0 +1,157 @@
+<!-- Horizontal Form -->
+<div class="box box-info">
+	<div class="box-header with-border">
+		<h3 class="box-title">添加医生</h3>
+	</div>
+	<!-- /.box-header -->
+	<!-- form start -->
+	<form class="form-horizontal">
+		<div class="box-body">
+			<div class="form-group">
+				<label for="nameId" class="col-sm-2 control-label">医生姓名</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="nameId"
+						placeholder="医生姓名"> <br />
+				</div>
+				<div class="form-group">
+					<label for="genderId" class="col-sm-2 control-label">医生性别</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="genderId"
+							placeholder="医生性别"> <br />
+					</div>
+					<div class="form-group">
+						<label for="telId" class="col-sm-2 control-label">医生电话</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="telId"
+								placeholder="医生电话"> <br />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="entryId" class="col-sm-2 control-label">入职日期</label>
+						<div class="col-sm-10">
+							<input type="date" class="form-control" id="entryId"
+								placeholder="入职日期"> <br />
+						</div>
+					</div>
+					
+<!-- 					<input type="date" name="user_date" /> -->
+					<div class="form-group">
+						<label for="emailId" class="col-sm-2 control-label">医生邮箱</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="emailId"
+								placeholder="医生邮箱"> <br />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="jobId" class="col-sm-2 control-label">医生职位</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="jobId"
+								placeholder="医生职位"> <br />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.box-body -->
+		<div class="box-footer">
+			<button type="button" class="btn btn-default btn-cancel">Cancel</button>
+			<button type="button" class="btn btn-info pull-right btn-save">Save</button>
+		</div>
+		<!-- /.box-footer -->
+	</form>
+</div>
+<!-- bootstrap样式表 -->
+
+
+<!-- jquery -->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- bootstrap脚本 -->
+<!-- <script -->
+<!-- 	src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+
+<!-- <!-- 时间选择器前置脚本 --> 
+<!-- <script -->
+<!-- 	src="https://cdn.bootcss.com/moment.js/2.22.1/moment-with-locales.min.js"></script> -->
+
+<!-- <!-- 时间选择器核心脚本 --> 
+<!-- <script -->
+<!-- 	src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script> -->
+<!-- <script> -->
+	
+</script>
+<script type="text/javascript">
+	$(function() {
+
+		$(".box-footer").on("click", ".btn-cancel", doCancel).on("click",
+				".btn-save,.btn-update", doSaveOrUpdate)
+
+		var rowData = $("#mainContentId").data("rowData");
+		//假如有值说明是修改,则基于此值初始化编辑页面.
+		debugger
+		console.log(rowData);
+		if (rowData)
+			doInitEditFormData(rowData);
+	});
+	// 初始化表单数据
+	//   	$(function () {
+	//   	    $('#entryId').datetimepicker({
+	//   	        format: 'YYYY-MM-DD',
+	//   	        locale: moment.locale('zh-cn')
+	//   	    });
+	//   	});
+	function doInitEditFormData(rowData) {
+		$("input[value=" + rowData.type + "]").prop("checked", true);
+		$("#nameId").val(rowData.name);
+		$("#genderId").val(rowData.gender);
+		$("#telId").val(rowData.tel);
+	 	$("#entryId").val(rowData.entrydate);  
+// 		$("#entryId").datetimepicker({
+// 			format : 'YYYY-MM-DD'
+// 			});
+		$("#emailId").val(rowData.email);
+		$("#jobId").val(rowData.job);
+		debugger
+	}
+	//回到列表页面
+	function doCancel() {
+		var url = "doctor/doDoctorListUI";
+		$("#mainContentId").load(url);
+	}
+	//将表单数据发送到服务端
+	function doSaveOrUpdate() {
+		debugger
+		//1.获取表单中用户输入数据
+		var params = doGetEditFormData();
+		var rowData = $("#mainContentId").data("rowData");
+		if (rowData)
+			params.id = rowData.id;
+		//2.异步提交数据到服务端
+		var insertUrl = "doctor/doSaveObject";
+		var updateUrl = "doctor/doUpdateObject";
+		var url = rowData ? updateUrl : insertUrl;
+
+		$.post(url, params, function(result) {
+
+			if (result.state == 1) {
+				alert(result.message);
+				doCancel();
+			} else {
+				alert(result.message);
+			}
+		})
+	}
+
+	function doGetEditFormData() {
+		var params = {
+			id : $("input[name='Id']:checked").val(),
+			'name' : $("#nameId").val(),
+			'gender' : $("#genderId").val(),
+			'tel' : $("#telId").val(),
+			'entrydate' : $("#entryId").val(),
+			'email' : $("#emailId").val(),
+			'job' : $("#jobId").val()
+		}
+		return params;
+	}
+</script>

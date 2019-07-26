@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.dao.DoctorDao">
+	<!-- 提取sql共性 -->
+	<sql id="queryWhereId">
+		<where>
+			<if test="name!=null and name!=''">
+				name like concat("%",#{name},"%")
+			</if>
+		</where>
+	</sql>
+	<!-- 分页查询 -->
+	<select id="findPageObjects" resultType="com.cy.pojo.Doctor">
+		select *from doctor
+		<include refid="queryWhereId" />
+		limit #{startIndex},#{pageSize}
+	</select>
+	<!-- 统计记录总数 -->
+	<select id="getRowCount" resultType="int">
+		select count(*)
+		from doctor
+		<include refid="queryWhereId" />
+	</select>
+	<delete id="deleteByIds">
+		delete from doctor
+		where id in <!-- (1,2,3,4,5) -->
+		<foreach collection="array" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</delete>
+	<insert id="insertObject">
+		insert into doctor (name,gender,tel,entrydate,email,job)
+		values (#{name},#{gender},#{tel},#{entrydate},#{email},#{job})
+	</insert>
+	<!-- <select id="findObjects"> -->
+	<!-- select c,*(select name from dept p where c.parentid=p.id)name from 
+		dept c -->
+	<!-- </select> -->
+	<update id="updateObject">
+		update doctor set
+		name=#{name},
+		gender=#{gender},
+		tel=#{tel},
+		entrydate=#{entrydate},
+		email=#{email},
+		job=#{job}
+		where id=#{id}
+	</update>
+	<select id="findById" resultType="com.cy.pojo.Doctor">
+	select * from doctor where id=#{id}
+	</select>
+</mapper>

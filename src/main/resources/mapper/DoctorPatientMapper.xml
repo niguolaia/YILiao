@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.dao.PatientDoctorDao">
+   
+   <select id="findDoctorIdsByPatientIds" resultType="int">
+      select doctor_id
+      from patient_doctor
+      where patient_id in <!--(1,2,3,4)-->
+      <foreach collection="patientIds"
+               open="("
+               close=")"
+               separator=","
+               item="patientId">
+           #{pateintId}
+      </foreach>
+   </select>  
+   
+ <insert id="insertObjects">
+      insert into patient_doctor
+      (patient_id,doctor_id)
+      values 
+      <foreach collection="doctorIds"
+               separator=","
+               item="doctorId">
+           (#{patientId},#{doctorId})
+      </foreach>
+   </insert> 
+   
+</mapper>
