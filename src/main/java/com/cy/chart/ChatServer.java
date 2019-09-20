@@ -14,7 +14,7 @@ import javax.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 
 import net.sf.json.JSONObject;
-
+//指定站点
 @ServerEndpoint("/websocket")
 @Component
 public class ChatServer {
